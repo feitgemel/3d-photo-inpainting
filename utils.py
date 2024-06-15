@@ -1,30 +1,27 @@
-import os
 import glob
-import cv2
-import scipy.misc as misc
-from skimage.transform import resize
-import numpy as np
+import os
 from functools import reduce
 from operator import mul
-import torch
-from torch import nn
+
+import cv2
 import matplotlib.pyplot as plt
-import re
+import numpy as np
+import torch
+from skimage.transform import resize
+
 try:
     import cynetworkx as netx
 except ImportError:
     import networkx as netx
-from scipy.ndimage import gaussian_filter
-from skimage.feature import canny
+
 import collections
-import shutil
-import imageio
 import copy
-from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-import time
-from scipy.interpolate import interp1d
 from collections import namedtuple
+
+import imageio
+from matplotlib import pyplot as plt
+from scipy.interpolate import interp1d
+
 
 def path_planning(num_frames, x, y, z, path_type=''):
     if path_type == 'straight-line':
@@ -69,11 +66,11 @@ def filter_irrelevant_edge_new(self_edge, comp_edge, other_edges, other_edges_wi
     self_edge = self_edge.squeeze()
     dilate_bevel_self_edge = cv2.dilate((self_edge + comp_edge).astype(np.uint8), np.array([[1,1,1],[1,1,1],[1,1,1]]), iterations=1)
     dilate_cross_self_edge = cv2.dilate((self_edge + comp_edge).astype(np.uint8), np.array([[0,1,0],[1,1,1],[0,1,0]]).astype(np.uint8), iterations=1)
-    edge_ids = np.unique(other_edges_with_id * context + (-1) * (1 - context)).astype(np.int)
+    edge_ids = np.unique(other_edges_with_id * context + (-1) * (1 - context)).astype(int)
     end_depth_maps = np.zeros_like(self_edge)
-    self_edge_ids = np.sort(np.unique(other_edges_with_id[self_edge > 0]).astype(np.int))
+    self_edge_ids = np.sort(np.unique(other_edges_with_id[self_edge > 0]).astype(int))
     self_edge_ids = self_edge_ids[1:] if self_edge_ids.shape[0] > 0  and self_edge_ids[0] == -1 else self_edge_ids
-    self_comp_ids = np.sort(np.unique(other_edges_with_id[comp_edge > 0]).astype(np.int))
+    self_comp_ids = np.sort(np.unique(other_edges_with_id[comp_edge > 0]).astype(int))
     self_comp_ids = self_comp_ids[1:] if self_comp_ids.shape[0] > 0  and self_comp_ids[0] == -1 else self_comp_ids
     edge_ids = edge_ids[1:] if edge_ids[0] == -1 else edge_ids
     other_edges_info = []
@@ -1067,8 +1064,8 @@ def refine_color_around_edge(mesh, info_on_pix, edge_ccs, config, spdb=False):
     for edge_id, edge_cc in enumerate(edge_ccs):
         if len(edge_cc) == 0:
             continue
-        near_maps = np.zeros((H, W)).astype(np.bool)
-        far_maps = np.zeros((H, W)).astype(np.bool)
+        near_maps = np.zeros((H, W)).astype(bool)
+        far_maps = np.zeros((H, W)).astype(bool)
         tmp_far_nodes = set()
         far_nodes = set()
         near_nodes = set()

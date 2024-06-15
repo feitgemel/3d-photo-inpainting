@@ -1,36 +1,19 @@
-import os
-import numpy as np
-try:
-    import cynetworkx as netx
-except ImportError:
-    import networkx as netx
 
-import json
-import scipy.misc as misc
-#import OpenEXR
-import scipy.signal as signal
-import matplotlib.pyplot as plt
-import cv2
-import scipy.misc as misc
-from skimage import io
-from functools import partial
-from vispy import scene, io
-from vispy.scene import visuals
-from functools import reduce
-# from moviepy.editor import ImageSequenceClip
-import scipy.misc as misc
-from vispy.visuals.filters import Alpha
-import cv2
-from skimage.transform import resize
 import copy
+from functools import reduce
+
+import cv2
+import matplotlib.pyplot as plt
+import networkx as netx
+import numpy as np
+# from moviepy.editor import ImageSequenceClip
+#import OpenEXR
 import torch
-import os
-from utils import refine_depth_around_edge, smooth_cntsyn_gap
-from utils import require_depth_edge, filter_irrelevant_edge_new, open_small_mask
-from skimage.feature import canny
-from scipy import ndimage
-import time
-import transforms3d
+
+from utils import (filter_irrelevant_edge_new, open_small_mask,
+                   refine_depth_around_edge, require_depth_edge,
+                   smooth_cntsyn_gap)
+
 
 def relabel_node(mesh, nodes, cur_node, new_node):
     if cur_node == new_node:
@@ -405,9 +388,9 @@ def extrapolate(global_mesh,
     fpath_ids = fpath_ids[1:] if fpath_ids.shape[0] > 0 and fpath_ids[0] == -1 else []
     fpath_real_id_map = np.zeros_like(global_fpath_map) - 1
     for fpath_id in fpath_ids:
-        fpath_real_id = np.unique(((global_fpath_map == fpath_id).astype(np.int) * (other_edge_with_id + 1)) - 1)
+        fpath_real_id = np.unique(((global_fpath_map == fpath_id).astype(int) * (other_edge_with_id + 1)) - 1)
         fpath_real_id = fpath_real_id[1:] if fpath_real_id.shape[0] > 0 and fpath_real_id[0] == -1 else []
-        fpath_real_id = fpath_real_id.astype(np.int)
+        fpath_real_id = fpath_real_id.astype(int)
         fpath_real_id = np.bincount(fpath_real_id).argmax()
         fpath_real_id_map[global_fpath_map == fpath_id] = fpath_real_id
     nxs, nys = np.where((fpath_map > -1))
